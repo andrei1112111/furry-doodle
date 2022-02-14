@@ -53,10 +53,11 @@ def main():
     global scale, x, y, mapp, address, pt
     pygame.init()
     screen = pygame.display.set_mode((600, 600))
-    pygame.display.set_caption('Большая задача по Maps API. Часть №6')
+    pygame.display.set_caption('Большая задача по Maps API. Часть №7')
     clock = pygame.time.Clock()
     font = pygame.font.Font(None, 32)
     input_box = pygame.Rect(10, 460, 300, 40)
+    reset_button = pygame.Rect(10, 520, 335, 40)
     active = False
     text = 'Новосибирск'
     update(address, pt)
@@ -120,6 +121,9 @@ def main():
                     active = not active
                 else:
                     active = False
+                if reset_button.collidepoint(event.pos):
+                    pt = None
+                    ch = True
             if event.type == pygame.KEYDOWN:
                 if active:
                     if event.key == pygame.K_RETURN:
@@ -144,6 +148,9 @@ def main():
         else:
             c = pygame.color.Color('black')
         pygame.draw.rect(screen, c, input_box, 2)
+
+        screen.blit(font.render('Сброс поискового результата', True, pygame.color.Color('black')), (reset_button.x + 5, reset_button.y + 5))
+        pygame.draw.rect(screen, pygame.color.Color('black'), reset_button, 2)
 
         pygame.display.flip()
 
