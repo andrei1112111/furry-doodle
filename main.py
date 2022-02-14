@@ -20,7 +20,6 @@ def geo_search(search, ch=False):
                     'GeoObject']['metaDataProperty']['GeocoderMetaData']['Address']['postal_code'] + '; '
             except Exception:
                 ch = ('(Нет почтового кода); ')
-        print(json_response['response']['GeoObjectCollection']['featureMember'][0]['GeoObject'])
         return toponym, \
                ch + json_response['response']['GeoObjectCollection']['featureMember'][0][
                    'GeoObject']['metaDataProperty']['GeocoderMetaData']['text']
@@ -64,7 +63,7 @@ def main():
     global scale, x, y, mapp, address, pt
     pygame.init()
     screen = pygame.display.set_mode((600, 610))
-    pygame.display.set_caption('Большая задача по Maps API. Часть №9')
+    pygame.display.set_caption('Большая задача по Maps API. Часть №10')
     clock = pygame.time.Clock()
     font = pygame.font.Font(None, 32)
     font2 = pygame.font.Font(None, 18)
@@ -144,6 +143,8 @@ def main():
                     obj_addr_text = ''
                 if pr1.collidepoint(event.pos) or pr2.collidepoint(event.pos):
                     pr_ch = not pr_ch
+                    pt, obj_addr_text = geo_search(address, pr_ch)
+                    ch = True
             if event.type == pygame.KEYDOWN:
                 if active:
                     if event.key == pygame.K_RETURN:
