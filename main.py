@@ -12,7 +12,10 @@ def geo_search(search):
         json_response = response.json()
         toponym = json_response["response"]["GeoObjectCollection"]["featureMember"][0]["GeoObject"]
         toponym = toponym["Point"]["pos"]
-        return toponym
+        print(json_response['response']['GeoObjectCollection']['featureMember'][0]['GeoObject'])
+        return toponym, \
+               json_response['response']['GeoObjectCollection']['featureMember'][0]['GeoObject']['metaDataProperty'][
+                   'GeocoderMetaData']['text']
     else:
         print("Ошибка выполнения запроса:")
         print("Http статус:", response.status_code, "(", response.reason, ")")
@@ -28,7 +31,7 @@ def exitt():
 
 def update(addr, pt):
     sp = {0: 'map', 1: 'sat', 2: 'sat,skl'}
-    pos = [float(i) for i in geo_search(addr).split(' ')]
+    pos = [float(i) for i in geo_search(addr)[0].split(' ')]
     pos[0] += x
     pos[1] += y
     pos = ','.join([str(i) for i in pos])
@@ -52,12 +55,14 @@ def update(addr, pt):
 def main():
     global scale, x, y, mapp, address, pt
     pygame.init()
-    screen = pygame.display.set_mode((600, 600))
-    pygame.display.set_caption('Большая задача по Maps API. Часть №7')
+    screen = pygame.display.set_mode((600, 610))
+    pygame.display.set_caption('Большая задача по Maps API. Часть №8')
     clock = pygame.time.Clock()
     font = pygame.font.Font(None, 32)
     input_box = pygame.Rect(10, 460, 300, 40)
-    reset_button = pygame.Rect(10, 520, 335, 40)
+    obj_addr = pygame.Rect(10, 510, 580, 40)
+    obj_addr_text = ''
+    reset_button = pygame.Rect(10, 560, 335, 40)
     active = False
     text = 'Новосибирск'
     update(address, pt)
@@ -124,11 +129,12 @@ def main():
                 if reset_button.collidepoint(event.pos):
                     pt = None
                     ch = True
+                    obj_addr_text = ''
             if event.type == pygame.KEYDOWN:
                 if active:
                     if event.key == pygame.K_RETURN:
                         address = text.strip().replace(' ', ', ')
-                        pt = geo_search(address)
+                        pt, obj_addr_text = geo_search(address)
                         x = y = 0
                         ch = True
                     elif event.key == pygame.K_BACKSPACE:
@@ -149,7 +155,12 @@ def main():
             c = pygame.color.Color('black')
         pygame.draw.rect(screen, c, input_box, 2)
 
-        screen.blit(font.render('Сброс поискового результата', True, pygame.color.Color('black')), (reset_button.x + 5, reset_button.y + 5))
+        screen.blit(font.render(obj_addr_text, True, pygame.color.Color('black')),
+                    (obj_addr.x + 5, obj_addr.y + 5))
+        pygame.draw.rect(screen, pygame.color.Color('black'), obj_addr, 2)
+
+        screen.blit(font.render('Сброс поискового результата', True, pygame.color.Color('black')),
+                    (reset_button.x + 5, reset_button.y + 5))
         pygame.draw.rect(screen, pygame.color.Color('black'), reset_button, 2)
 
         pygame.display.flip()
