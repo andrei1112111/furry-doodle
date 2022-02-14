@@ -53,7 +53,7 @@ def main():
     global scale, x, y, mapp, address, pt
     pygame.init()
     screen = pygame.display.set_mode((600, 600))
-    pygame.display.set_caption('Большая задача по Maps API. Часть №5')
+    pygame.display.set_caption('Большая задача по Maps API. Часть №6')
     clock = pygame.time.Clock()
     font = pygame.font.Font(None, 32)
     input_box = pygame.Rect(10, 460, 300, 40)
